@@ -1,9 +1,10 @@
 import nltk
 import os
+import numpy as np
 from nltk.corpus import words
 from nltk.corpus import names
 
-class dictionary:
+class WORDBANK:
     def generate(self):
         # Generates the word bank for our wordle simulator
 
@@ -37,6 +38,31 @@ class dictionary:
                 f.write(word)
                 f.write('\n')
         f.close()
+        self.lines = len(five_letter_words)
+    
+    def valid(self, guess):
+        # Ensures all guesses are in the word list
+        f = open(self.word_list, "r")
+        words = f.readlines()
+        for word in words:
+            if guess == word.strip():
+                f.close()  
+                return True
+        f.close()  
+        return False
+        
+    def answer(self):
+        # Picks the answer for the current set of guesses
+        f = open(self.word_list, "r")     
+        self.answer = f.readlines()[np.random.randint(self.lines)].strip()
+        f.close()
+        return self.answer
+    
+    def is_sol(self, guess):
+        if self.answer == guess:
+            return True
+        else:
+            return False
         
 if __name__ == "__main__":
     # Ensures both the names and common english words corpora are downloaded
@@ -48,5 +74,16 @@ if __name__ == "__main__":
         nltk.data.find('corpora/words.zip')
     except LookupError:
         nltk.download('words')
-    dictionary().generate()
-    print("wow")
+    
+    dictionary = WORDBANK()
+    dictionary.generate()
+    word = dictionary.answer()
+    if dictionary.valid("hoped"):
+        print('yerrr')
+    else:
+        print('Not in word list')
+    print(word)
+    if dictionary.is_sol("hopes"):
+        print('yea')
+    else:
+        print("nooooo")
