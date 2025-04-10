@@ -29,16 +29,17 @@ class WORDBANK:
             f.close()
             f = open(self.word_list, "w")
             for word in five_letter_words:
-                f.write(word)
+                f.write(word.lower())
                 f.write('\n')
         else:
             f.close()
             f = open(self.word_list, "a")
             for word in five_letter_words:
-                f.write(word)
+                f.write(word.lower())
                 f.write('\n')
         f.close()
         self.lines = len(five_letter_words)
+        return self.word_list
     
     def valid(self, guess):
         # Ensures all guesses are in the word list
