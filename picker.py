@@ -104,32 +104,38 @@ class picker():
             index = domain.index(x)
             remove.append(index)
             j.append(index)
+            if x not in state.grey:
+                state.grey.append(x)
         
         for x in yellow:
             if x[0] == col:
                 remove.append(x[0])
+                if x[1] not in state.grey:
+                    state.grey.append(x[1])
         for x in green:
             if x[0] == col:
                 exploit.append(x[1])               
-        
+                if x not in state.green:
+                    state.green.append(x)
+        #print(state.grey)
         if len(exploit) > 0:
             return domain.index(exploit[0]), last
         else:
             for x in yellow:
-                if x[0] != col and x[1] not in remove and x[1] not in state.get_guess() and last != col:
-                    if np.random.random(1) > 0.10:
-                        for y in j:
-                            removed += probability_distribution[y] 
-                            probability_distribution[y] = 0
-                        #print(j, col)
-                            
-                            
-                        sum_remaining = sum(probability_distribution)
-                        for l in range(len(domain)):
-                            probability_distribution[l] += (probability_distribution[l] / sum_remaining) * removed
-                        parent.set_probability_distribution_actions(probability_distribution)
+                if x[0] != col and domain.index(x[1]) not in remove and x[1] not in state.grey and x[1] not in state.get_guess():
+                    for y in j:
+                        removed += probability_distribution[y] 
+                        probability_distribution[y] = 0
+                    #print(j, col)
                         
-                        return domain.index(x[1]), col
+                        
+                    sum_remaining = sum(probability_distribution)
+                    for l in range(len(domain)):
+                        probability_distribution[l] += (probability_distribution[l] / sum_remaining) * removed
+                    parent.set_probability_distribution_actions(probability_distribution)
+                    
+                    return domain.index(x[1]), col
+                    
             for y in j:
                 removed += probability_distribution[y] 
                 probability_distribution[y] = 0
@@ -155,6 +161,7 @@ class picker():
 
     def search(self, state, model, budget):
         #os.system('cls')
+       # np.random.seed(42)
         letters = 'abcdefghijklmnopqrstuvwxyz'
         dictionary = WORDBANK()
         dictionary.generate()
@@ -171,7 +178,8 @@ class picker():
         num_guesses = 0
         last = -1
         correct_guess = state.answer
-        while num_guesses < 6:
+        attempt = ''
+        while attempt != state.answer:
             col = -1
             attempt = ''
             heapq.heappush(open, root)
@@ -179,7 +187,7 @@ class picker():
             while len(attempt) < 5:
                 col += 1
                 if tries > budget:
-                    return tries, None, False
+                    return tries, None, False, num_guesses
                 parent = heapq.heappop(open)            
                 state = parent.get_game_state()
                 a, last = self.constraints(parent, letters, state, col, grey, yellow, green, last)
@@ -224,9 +232,9 @@ class picker():
                        # print(guess.get_guess()[:x])
                        # print(guess.get_pattern())
                         x -= 1
-                if attempt == guess.answer:
+                if attempt == state.answer:
                     path = self.recover_path(guess_node)
-                    return tries, path, True
+                    return tries, path, True, num_guesses
                 correct = [(index, x) for index, x in enumerate(correct_guess)]
                # print(correct)
                     
@@ -253,7 +261,7 @@ class picker():
                 guess.guess = ['']
                 
             else:
-               # print(attempt)
+              #  print(attempt)
                # print(grey)
                 guess.invalid()
                 heapq.heappop(open)  
@@ -261,4 +269,4 @@ class picker():
 
                
 
-        return tries, None, False
+        return tries, None, False, num_guesses

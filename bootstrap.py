@@ -3,7 +3,7 @@ import time
 from os.path import join
 
 class Bootstrap:
-    def __init__(self, states, initial_budget=5000):
+    def __init__(self, states, initial_budget=1000):
         self._states = states
         self._number_problems = len(states)
         
@@ -34,16 +34,16 @@ class Bootstrap:
                 print(state.answer, end=" result: ")
                 #print()
 
-                tries, path, passed = planner.search(state, model, budget)
+                tries, path, passed, num_guesses = planner.search(state, model, budget)
                 total_expanded += tries
                      
                 if passed and name not in current_solved_puzzles:
                     number_solved += 1
                     current_solved_puzzles.add(name)    
                     model.update(path)
-                    print('solved.', tries)
+                    print('solved.', tries, "5 letter strings.", num_guesses, "Guesses")
                 else:
-                    print('failed.', tries)
+                    print('failed.', tries, "5 letter strings.", num_guesses, "Guesses")
             
             end = time.time()
             with open(join(self._log_folder + 'training_bootstrap'), 'a') as results_file:
@@ -57,7 +57,7 @@ class Bootstrap:
             
             print('Number solved: ', number_solved)
             if number_solved == 0:
-                #budget *= 2
+              #  budget *= 2
                 print('Budget: ', budget)
                 continue
                                     

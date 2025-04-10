@@ -9,7 +9,7 @@ class WordleState():
         self.answer = answer
         
     def get_pattern(self):
-        return str((self.green, self.yellow, self.row, self.col, self.guess))
+        return str((self.green, self.yellow, self.guess))
     
     def add_letter(self, a):
         letters = 'abcdefghijklmnopqrstuvwxyz'

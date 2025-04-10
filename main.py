@@ -31,7 +31,7 @@ def main():
 
    
     j = 0
-    limit = 25
+    limit = 50
     for word in wordlist.readlines():
         s = WordleState(word.lower().strip())
         if word.strip() == 'audio':
