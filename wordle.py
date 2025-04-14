@@ -1,19 +1,16 @@
 class WordleState():
-    def __init__(self, answer, grey=[], yellow=[], green=[], row=0, col=0, guess=[]):
+    def __init__(self, answer, grey=[], yellow=[], green=[], row=0, guess=[]):
         self.green = green
         self.yellow = yellow
         self.grey = grey
         self.row = row
-        self.col = col
         self.guess = guess
         self.answer = answer
+        self.remove = []
+        self.exploit = []
         
     def get_pattern(self):
-        return str((self.green, self.yellow, self.guess))
-    
-    def add_letter(self, a):
-        letters = 'abcdefghijklmnopqrstuvwxyz'
-        self.guess.append(letters[a])
+        return str((self.green, self.yellow))
 
     def get_guess(self):
         return (self.guess)
@@ -24,19 +21,11 @@ class WordleState():
     def answer(self):
         return(self.answer)
     
-    def update_states(self, green, yellow, grey, row, col, guesses):
+    def update_states(self, green, yellow, grey, row, guesses):
+        yellow.sort()
+        green.sort()
         self.green = green
         self.yellow = yellow
         self.grey = grey
         self.row = row
-        self.col = col
         self.guess = guesses
-    
-    def update_constraints(self, green, yellow, grey, row, col, guess):
-        self.green = green
-        self.yellow = yellow
-        self.grey = grey
-        self.row = row
-        self.col = col
-        self.guess = guess
-        
