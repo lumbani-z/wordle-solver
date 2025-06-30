@@ -1,4 +1,4 @@
-This is a project for CMPUT 366 that plays wordle.
+This is a project that plays wordle.
 
 Topics used by this program will be CSP, and policy learning
 
